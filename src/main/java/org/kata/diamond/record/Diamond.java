@@ -22,8 +22,8 @@ public record Diamond() {
 
     public static String buildDiamond(String a) {
         var alphabetSequence = getSequence.apply(a);
-        var diamonds = initDiamond.apply(alphabetSequence);
-        return testExtraction
+        var diamonds = initList.apply(alphabetSequence);
+        return createListDiamond
                 .andThen(toDiamond)
                 .apply(alphabetSequence,diamonds);
     }
@@ -33,7 +33,7 @@ public record Diamond() {
                 .limit((long) Character.toLowerCase(character.charAt(0)) -96)
                 .collect(Collectors.joining()).toUpperCase();
 
-    private static final Function<String, List<String[]>> initDiamond = tab ->
+    private static final Function<String, List<String[]>> initList = tab ->
             IntStream.range(0 , tab.length() *2)
                 .mapToObj(s -> new String[tab.length() *2])
                     .collect(toCollection(ArrayList::new));
@@ -44,7 +44,7 @@ public record Diamond() {
                     .map(s -> String.join("", s) + "\n")
                     .collect(Collectors.joining());
 
-    private static final BiFunction<String, List<String[]>, List<String[]>> testExtraction = (alphabetSequence, diamonds) -> {
+    private static final BiFunction<String, List<String[]>, List<String[]>> createListDiamond = (alphabetSequence, diamonds) -> {
         var diamondList = new ArrayList<>(diamonds);
         var diamondLength = alphabetSequence.length() *2;
         var lastPosition = diamondLength - 1;
@@ -52,8 +52,9 @@ public record Diamond() {
 
         IntStream.range(0 , diamondLength / 2).forEachOrdered(s ->{
             var firstArray = new String[lastPosition];
-            firstArray[firstPosition -s] = String.valueOf(alphabetSequence.charAt(s));
-            firstArray[firstPosition +s] = String.valueOf(alphabetSequence.charAt(s));
+            var value= String.valueOf(alphabetSequence.charAt(s));
+            firstArray[firstPosition -s] = value;
+            firstArray[firstPosition +s] = value;
             diamondList.set(s,firstArray);
             diamondList.set(lastPosition -s,firstArray);
         });
